@@ -64,7 +64,7 @@ function getPrNumber(): string
 function hasLabel(string $pullRequestId, string $repoFullName, string $githubToken, string $targetLabel): bool
 {
     $client = new Client([
-        'base_uri' => 'https://api.github.com',
+        'base_uri' => getenv('INPUT_GITHUB-API-BASE-URL'),
         'headers' => [
             'Authorization' => 'Bearer ' . $githubToken,
             'Content-Type' => 'application/json',
@@ -110,7 +110,7 @@ function hasLabel(string $pullRequestId, string $repoFullName, string $githubTok
 function fetchPrChanges(string $pullRequestId, string $repoFullName, string $githubToken): string
 {
     // The GitHub API endpoint to get the details of a pull request, including the files changed
-    $apiEndpoint = "https://api.github.com/repos/{$repoFullName}/pulls/{$pullRequestId}/files";
+    $apiEndpoint = getenv('INPUT_GITHUB-API-BASE-URL') . "/repos/{$repoFullName}/pulls/{$pullRequestId}/files";
 
     $client = new Client();
 
@@ -213,7 +213,7 @@ function generatePrompt(string $prChanges): string
 
     $prompt .= "Please format your response as follows:\n";
     $prompt .= "**Score**: [Your score here and an emoji]\n\n";
-    $prompt .= "**Suggested AI Improvements:**\n";
+    $prompt .= "**AI Suggested Improvements:**\n";
     $prompt .= "1. [First improvement suggestion]\n";
     $prompt .= "2. [Second improvement suggestion]\n";
     $prompt .= "...";
@@ -232,7 +232,7 @@ function generatePrompt(string $prChanges): string
  */
 function postCommentToPr(string $comment, string $pullRequestId, string $repoFullName, string $githubToken): void
 {
-    $apiEndpoint = "https://api.github.com/repos/{$repoFullName}/issues/{$pullRequestId}/comments";
+    $apiEndpoint = getenv('INPUT_GITHUB-API-BASE-URL') . "/repos/{$repoFullName}/issues/{$pullRequestId}/comments";
 
     $client = new Client();
 
